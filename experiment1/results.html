@@ -1,0 +1,91 @@
+
+<style>
+    .decorative-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    .decorative-table th, .decorative-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .decorative-table th {
+        background-color: #f2f2f2;
+    }
+    
+    .decorative-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .decorative-table tr:hover {
+        background-color: #eaeaea;
+    }
+</style>
+<table border="1" class="dataframe decorative-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Type</th>
+      <th>fileSize</th>
+      <th>meanTime</th>
+      <th>std-dev</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Original File</td>
+      <td>5271552</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Avro</td>
+      <td>1905120</td>
+      <td>1.636052</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;PBF</td>
+      <td>3902108</td>
+      <td>1.151888</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Parq mean</td>
+      <td>1602710</td>
+      <td>0.310162</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Feth</td>
+      <td>2066586</td>
+      <td>0.044549</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Avro-&gt;GeoJSON</td>
+      <td>5455678</td>
+      <td>2.326689</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Deserialize: PBF-&gt;GeoJSON</td>
+      <td>7135678</td>
+      <td>2.323410</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Parq-&gt;GeoJSON</td>
+      <td>8355717</td>
+      <td>2.048769</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>Deserialize: feth-&gt;GeoJSON</td>
+      <td>8355717</td>
+      <td>1.869749</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
