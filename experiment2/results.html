@@ -1,0 +1,97 @@
+
+<style>
+    .decorative-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    .decorative-table th, .decorative-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .decorative-table th {
+        background-color: #f2f2f2;
+    }
+    
+    .decorative-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .decorative-table tr:hover {
+        background-color: #eaeaea;
+    }
+</style>
+<table border="1" class="dataframe decorative-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Type</th>
+      <th>fileSize</th>
+      <th>meanTime</th>
+      <th>std-dev</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Original File</td>
+      <td>12925.53 kb</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>JSON-&gt;GeoJSON</td>
+      <td>11538.84 kb</td>
+      <td>1.880579</td>
+      <td>0.367778</td>
+    </tr>
+    <tr>
+      <td>Serialize: JSON-&gt;Avro</td>
+      <td>7001.35 kb</td>
+      <td>0.578493</td>
+      <td>0.120263</td>
+    </tr>
+    <tr>
+      <td>Serialize: JSON-&gt;PBF</td>
+      <td>7109.38 kb</td>
+      <td>0.498522</td>
+      <td>0.120826</td>
+    </tr>
+    <tr>
+      <td>Serialize: JSON-&gt;Parq</td>
+      <td>3213.77 kb</td>
+      <td>1.309184</td>
+      <td>0.294465</td>
+    </tr>
+    <tr>
+      <td>Serialize: JSON-&gt;Feth</td>
+      <td>3873.73 kb</td>
+      <td>1.039154</td>
+      <td>0.315301</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Avro-&gt;GeoJSON</td>
+      <td>11554.39 kb</td>
+      <td>1.913935</td>
+      <td>0.544023</td>
+    </tr>
+    <tr>
+      <td>Deserialize: PBF-&gt;GeoJSON</td>
+      <td>11515.38 kb</td>
+      <td>1.742967</td>
+      <td>0.534467</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Parq-&gt;GeoJSON</td>
+      <td>12554.47 kb</td>
+      <td>6.260340</td>
+      <td>1.213715</td>
+    </tr>
+    <tr>
+      <td>Deserialize: feth-&gt;GeoJSON</td>
+      <td>12554.47 kb</td>
+      <td>5.115516</td>
+      <td>1.359125</td>
+    </tr>
+  </tbody>
+</table>

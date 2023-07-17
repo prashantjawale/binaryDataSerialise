@@ -40,7 +40,7 @@ feth_geojson_timing = []
 load_geojson_timing = []
 
 
-for test in range (0,1):
+for test in range (0,5):
 
     ## Read the GeoPackage using GeoPandas and convert to GeoJSON file.
 
@@ -444,7 +444,7 @@ data = pd.DataFrame({
     'std-dev':[0, np.std(geojson_avro_timing_np),np.std(geojson_pbf_timing_np),np.std(geojson_parq_timing_np),np.std(geojson_feth_timing_np),np.std(avro_geojson_timing_np),np.std(pbf_geojson_timing_np),np.std(parq_geojson_timing_np),np.std(feth_geojson_timing_np)],
 })
 
-data['fileSize'] = data['fileSize'].apply(lambda x:  f"{round(x/1024, 2)} mb")
+data['fileSize'] = data['fileSize'].apply(lambda x:  f"{round(x/1024, 2)} kb")
 # Create CSS styles for the table
 table_style = '''
 <style>
@@ -479,7 +479,7 @@ html_table = data.to_html(classes='decorative-table', index=False)
 # Combine table style and HTML table
 decorative_table = table_style + html_table
 
-with open('output.html', 'w') as f:
+with open('results.html', 'w') as f:
     f.write(decorative_table)
 
-webbrowser.open('output.html')
+webbrowser.open('results.html')
