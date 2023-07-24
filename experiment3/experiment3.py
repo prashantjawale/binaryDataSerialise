@@ -24,7 +24,7 @@ import webbrowser
 getcontext().prec = 16
 file_name = "experiment3"
 avro_schema_file_name = "address"
-INPUT_GPKG_FILE = 'gis_osm_traffic_free_1.shp'
+INPUT_SHP_FILE = 'gis_osm_traffic_free_1.shp'
 
 shp_geojson_timing = []
 geojson_pbf_timing = []
@@ -46,10 +46,10 @@ for test in range (0,5):
     print ("===========ShapeFile to GeoJSON==============")
     print ("Begin: Converting ShapeFile to GeoJSON...")
 
-    file_size = os.path.getsize(INPUT_GPKG_FILE)
+    file_size = os.path.getsize(INPUT_SHP_FILE)
     print("Shp File size is {} Kb".format(round(file_size/1024),2))
 
-    shp_gdf = gpd.read_file(INPUT_GPKG_FILE)
+    shp_gdf = gpd.read_file(INPUT_SHP_FILE)
     shp_gdf.to_file("./geojson-output/{}.geojson".format(file_name), driver='GeoJSON')
     print ("End: Converting ShapeFile to GeoJSON...")
     toc = time.perf_counter()
@@ -359,8 +359,8 @@ load_geojson_timing_np  = np.array(load_geojson_timing)
 
 print ("=====File Sizes=====")
 
-file_size = os.path.getsize(INPUT_GPKG_FILE)
-print("Input GPKG file size is {} Kb".format(round(file_size/1024),2))
+file_size = os.path.getsize(INPUT_SHP_FILE)
+print("Input SHP file size is {} Kb".format(round(file_size/1024),2))
 
 file_size = os.path.getsize('./geojson-output/{}.geojson'.format(file_name))
 print("./geojson-output/{}.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
@@ -391,7 +391,7 @@ print("./geojson-output/{}-fet.geojson size is {} Kb".format(file_name,round(fil
 
 
 print ("=====Run Times=====")
-print("Convert GPKG -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(shp_geojson_timing_np, dtype=np.float64),np.std(shp_geojson_timing_np, dtype=np.float64)))
+print("Convert SHP -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(shp_geojson_timing_np, dtype=np.float64),np.std(shp_geojson_timing_np, dtype=np.float64)))
 
 print("Load GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(load_geojson_timing_np, dtype=np.float64),np.std(load_geojson_timing_np, dtype=np.float64)))
 
@@ -406,7 +406,7 @@ print("Deserialize: feth->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mea
 
 data = pd.DataFrame({
     'Type': ['Original File','Serialize: GeoJSON->Avro','Serialize: GeoJSON->PBF','Serialize: GeoJSON->Parq mean','Serialize: GeoJSON->Feth','Deserialize: Avro->GeoJSON','Deserialize: PBF->GeoJSON','Deserialize: Parq->GeoJSON','Deserialize: feth->GeoJSON'],
-    'fileSize':[os.path.getsize(INPUT_GPKG_FILE),os.path.getsize('./binary-output/{}_fast.avro'.format(file_name)),os.path.getsize('./binary-output/{}.pbf'.format(file_name)), os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name)),os.path.getsize('./binary-output/{}_fet.feather'.format(file_name)),os.path.getsize('./geojson-output/{}-avro_fast.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-pbf.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))],
+    'fileSize':[os.path.getsize(INPUT_SHP_FILE),os.path.getsize('./binary-output/{}_fast.avro'.format(file_name)),os.path.getsize('./binary-output/{}.pbf'.format(file_name)), os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name)),os.path.getsize('./binary-output/{}_fet.feather'.format(file_name)),os.path.getsize('./geojson-output/{}-avro_fast.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-pbf.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))],
     'meanTime':[0, np.mean(geojson_avro_timing_np),np.mean(geojson_pbf_timing_np),np.mean(geojson_parq_timing_np),np.mean(geojson_feth_timing_np),np.mean(avro_geojson_timing_np),np.mean(pbf_geojson_timing_np),np.mean(parq_geojson_timing_np),np.mean(feth_geojson_timing_np)],
     'std-dev':[0, np.std(geojson_avro_timing_np),np.std(geojson_pbf_timing_np),np.std(geojson_parq_timing_np),np.std(geojson_feth_timing_np),np.std(avro_geojson_timing_np),np.std(pbf_geojson_timing_np),np.std(parq_geojson_timing_np),np.std(feth_geojson_timing_np)],
 })
