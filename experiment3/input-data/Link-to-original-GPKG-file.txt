@@ -1,0 +1,3 @@
+The original GPKG file used in this experiment is available from DROPBOX at the link below. The file is 198Mb in size and exceeds the limits allowed (conventionally) on Github. A sample of this file is provided within the experiment3 folder. 
+
+https://www.dropbox.com/s/2bvmgpndwkggzqp/Firenze_land-use_CLC_GB-West.gpkg?dl=0

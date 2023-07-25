@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package Experiment3Data;
+
+message Experiment3_prop {
+  required string nome = 1;
+  required int32 pk_uid = 2;
+  required string ucs19  = 3;
+  required string c1_19 = 5;
+  required string c2_19 = 6;
+  required string c3_19 = 7;
+  required string regione = 8;
+  required string siglaprov = 9;
+  required string siglareg = 10;
+  required string codistat = 11;
+  required string geometry = 12;
+}
+message Experiment3Polygons {
+repeated Experiment3_prop experiment3 = 1;
+}

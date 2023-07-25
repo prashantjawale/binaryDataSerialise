@@ -1,0 +1,18 @@
+{
+    "name": "FinlandAddresses",
+    "namespace": "FI_Addresses",
+    "type": "record",
+    "fields": [
+        {"name": "regione", "type": ["string","null"]},
+        {"name": "nome", "type": ["string","null"]},
+        {"name": "siglaprov", "type": ["string","null"]},
+        {"name": "siglareg", "type": ["string","null"]},
+        {"name": "pk_uid", "type": "int"},
+        {"name": "c3_19"  ,"type": ["string","null"]},
+        {"name": "c2_19" , "type": ["string","null"]},
+        {"name": "c1_19" , "type": ["string","null"]},
+        {"name": "ucs19" , "type": ["string","null"]},
+        {"name": "codistat", "type": ["string","null"]},
+        {"name": "geometry", "type": ["string","null"]}
+    ]
+}
