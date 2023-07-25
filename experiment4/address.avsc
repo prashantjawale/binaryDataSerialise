@@ -1,0 +1,8 @@
+{
+    "name": "FinlandAddresses",
+    "namespace": "FI_Addresses",
+    "type": "record",
+    "fields": [
+        {"name": "geometry", "type": ["string","null"]}
+    ]
+}

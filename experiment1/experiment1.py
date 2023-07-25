@@ -445,6 +445,8 @@ data = pd.DataFrame({
 })
 
 data['fileSize'] = data['fileSize'].apply(lambda x:  f"{round(x/1024, 2)} kb")
+data['meanTime'] = data['meanTime'].apply(lambda x:  f"{round(x, 2)} sec")
+data['std-dev'] = data['std-dev'].apply(lambda x:  f"{round(x, 2)} sec")
 # Create CSS styles for the table
 table_style = '''
 <style>
