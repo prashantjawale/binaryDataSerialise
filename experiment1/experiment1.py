@@ -18,6 +18,7 @@ from decimal import *
 import numpy as np
 import pandas as pd
 import webbrowser
+import copy
 
 getcontext().prec = 16
 file_name = "experiment1"
@@ -287,14 +288,7 @@ for test in range (0,5):
     geoJSON_Features_read = []
     with open('./binary-output/{}_fast.avro'.format(file_name), "rb") as fastavro_fo:
         for t_address in reader(fastavro_fo):
-            response_properties = {}
-            response_properties["addr:housenumber"] = t_address["addrHousenumber"]
-            response_properties["addr:street"] = t_address["addrStreet"]
-            response_properties["addr:city"] = t_address["addrCity"]
-            response_properties["source"] = t_address["source"]
-            response_properties["addr:unit"] = t_address["addrUnit"]
-            response_properties["fullAddress"] = t_address["fullAddress"]
-            #response_properties["fid"] = t_address["fid"]
+            response_properties = copy.deepcopy(t_address)
             response_properties_geometry = t_address["geometry"] #stored as WKT
             s = gpd.GeoSeries.from_wkt([response_properties_geometry])
             # Geopandas GeoSeries converts an array or list of WKT to a GeoSeries list.
