@@ -1,0 +1,91 @@
+
+<style>
+    .decorative-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    .decorative-table th, .decorative-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .decorative-table th {
+        background-color: #f2f2f2;
+    }
+    
+    .decorative-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .decorative-table tr:hover {
+        background-color: #eaeaea;
+    }
+</style>
+<table border="1" class="dataframe decorative-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Type</th>
+      <th>fileSize</th>
+      <th>meanTime</th>
+      <th>std-dev</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Original File</td>
+      <td>19916.0 kb</td>
+      <td>0.0 sec</td>
+      <td>0.0 sec</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Avro</td>
+      <td>18794.91 kb</td>
+      <td>2.42 sec</td>
+      <td>0.93 sec</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;PBF</td>
+      <td>18843.73 kb</td>
+      <td>2.52 sec</td>
+      <td>0.46 sec</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Parq mean</td>
+      <td>8190.45 kb</td>
+      <td>0.93 sec</td>
+      <td>0.22 sec</td>
+    </tr>
+    <tr>
+      <td>Serialize: GeoJSON-&gt;Feth</td>
+      <td>8858.69 kb</td>
+      <td>0.22 sec</td>
+      <td>0.08 sec</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Avro-&gt;GeoJSON</td>
+      <td>24657.02 kb</td>
+      <td>11.18 sec</td>
+      <td>1.13 sec</td>
+    </tr>
+    <tr>
+      <td>Deserialize: PBF-&gt;GeoJSON</td>
+      <td>24657.02 kb</td>
+      <td>13.4 sec</td>
+      <td>2.76 sec</td>
+    </tr>
+    <tr>
+      <td>Deserialize: Parq-&gt;GeoJSON</td>
+      <td>26541.34 kb</td>
+      <td>10.89 sec</td>
+      <td>2.49 sec</td>
+    </tr>
+    <tr>
+      <td>Deserialize: feth-&gt;GeoJSON</td>
+      <td>26541.34 kb</td>
+      <td>11.92 sec</td>
+      <td>3.39 sec</td>
+    </tr>
+  </tbody>
+</table>

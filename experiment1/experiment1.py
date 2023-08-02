@@ -393,25 +393,25 @@ file_size = os.path.getsize('./geojson-output/{}.geojson'.format(file_name))
 print("./geojson-output/{}.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./binary-output/{}_fast.avro'.format(file_name))
-print("./geojson-output/{}_fast.avro size is {} Kb".format(file_name,round(file_size/1024),2))
+print("./binary-output/{}_fast.avro size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./geojson-output/{}-avro_fast.geojson'.format(file_name))
 print("./geojson-output/{}-avro_fast.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./binary-output/{}.pbf'.format(file_name))
-print("./geojson-output/{}.pbf size is {} Kb".format(file_name,round(file_size/1024),2))
+print("./binary-output/{}.pbf size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./geojson-output/{}-pbf.geojson'.format(file_name))
 print("./geojson-output/{}-pbf.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name))
-print("./geojson-output/{}_parq.parquet size is {} Kb".format(file_name,round(file_size/1024),2))
+print("./binary-output/{}_parq.parquet size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name))
 print("./geojson-output/{}-parq.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./binary-output/{}_fet.feather'.format(file_name))
-print("./geojson-output/{}_fet.feather size is {} Kb".format(file_name,round(file_size/1024),2))
+print("./binary-output/{}_fet.feather size is {} Kb".format(file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))
 print("./geojson-output/{}-fet.geojson size is {} Kb".format(file_name,round(file_size/1024),2))

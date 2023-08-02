@@ -10,9 +10,16 @@ import shapely.wkt
 from fastavro import writer, reader, parse_schema
 from fastavro.schema import load_schema
 
+import pyarrow as pa
+import pyarrow.parquet as pq
+import pyarrow.feather as feather
+
 import experiment3_pb2
 from decimal import *
 import numpy as np
+import pandas as pd
+from shapely import wkt
+import webbrowser
 
 getcontext().prec = 16
 file_name = "experiment3"
@@ -29,8 +36,12 @@ INPUT_GPKG_FILE_LAYER = 'Firenze_land-use_CLC_WGS_84_SELECTED_10'
 geopkg_geojson_timing = []
 geojson_pbf_timing = []
 geojson_avro_timing = []
+geojson_parq_timing = []
+geojson_feth_timing = []
 avro_geojson_timing = []
 pbf_geojson_timing = []
+parq_geojson_timing = []
+feth_geojson_timing = []
 load_geojson_timing = []
 reduce_geojson_timing = []
 load_reduced_geojson_timing = []
@@ -99,7 +110,7 @@ for index, row in geojson_data.iterrows():
     reducedProperties["c3_19"] = row["c3_19"]
 
 
-    reducedPropertiesGeometry = row["geometry"].to_wkt() #stored as WKT
+    reducedPropertiesGeometry = row["geometry"].wkt #stored as WKT
     # Convert to a shapely.geometry.polygon.Polygon object
     g1 = shapely.wkt.loads(reducedPropertiesGeometry)
     ## create the new feature with just the selected properties.
@@ -123,7 +134,7 @@ file_size = os.path.getsize("{}/geojson-output/{}_propReduced.geojson".format(RO
 print("File size is {} Kb".format(round(file_size/1024),2))
 
 
-for test in range (0,1):
+for test in range (0,5):
 
     tic = time.perf_counter()
     print ("\nBegin: Loading reduced GeoJSON file for processing...")
@@ -382,6 +393,93 @@ for test in range (0,1):
     print(f"Timing Information: Total:\n\tSerialization Process \n\tTotal: {toc - tic:0.4f} seconds")
     file_size = os.path.getsize('{}/geojson-output/{}-avro_fast.geojson'.format(ROOT,file_name))
     print("File size is {} Kb".format(round(file_size/1024),2))
+    
+    ################### Apache Parquet #################################################
+    tic = time.perf_counter()
+    print ("===========GeoJSON to Parquet ==============")
+    print ("Serialize GeoJSON to Parquet")
+
+    df = geojson_data
+
+    df["geometry"] = df["geometry"].apply(lambda point: point.wkt)
+
+    # Convert pandas DataFrame to PyArrow table
+    table = pa.Table.from_pandas(df)
+
+    # Write the table to a Parquet file
+    pq.write_table(table, './binary-output/{}_parq.parquet'.format(file_name))
+
+    print ("Finished creating Apache parquet file")
+    toc = time.perf_counter()
+    geojson_parq_timing.append(toc - tic)
+
+    print(f"Timing Information: Total:\n\tSerialization Process \n\tTotal: {toc - tic:0.4f} seconds")
+    file_size = os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name))
+    print("File size is {} Kb".format(round(file_size/1024),2))
+    
+    ######################## Apache Parquet ###########################
+    print ("========= Apache Parquet ===========")
+    print ("Deserialize Apache Parquet to GeoJSON")
+    tic = time.perf_counter()
+    # Reading data from serialized_file
+    parquet_table = pd.read_parquet('./binary-output/experiment3_parq.parquet')
+    parquet_table['geometry'] = parquet_table['geometry'].apply(wkt.loads)
+
+    # Create the GeoDataFrame
+    gdf = gpd.GeoDataFrame(parquet_table, geometry='geometry')
+
+    gdf.to_file('./geojson-output/{}-parq.geojson'.format(file_name), driver='GeoJSON')
+
+    toc = time.perf_counter()
+    parq_geojson_timing.append(toc - tic)
+
+    print(f"Timing Information: Total:\n\tDeserialization Process \n\tTotal: {toc - tic:0.4f} seconds")
+    file_size = os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name))
+    print("File size is {} Kb".format(round(file_size/1024),2))
+    
+    ############################## Apache Feather #########################################
+    tic = time.perf_counter()
+    print ("===========GeoJSON to Feaather ==============")
+    print ("Serialize GeoJSON to Feather")
+
+    df = geojson_data
+
+    #df["geometry"] = df["geometry"].apply(lambda point: point.wkt)
+
+    # Convert pandas DataFrame to PyArrow table
+    table = pa.Table.from_pandas(df)
+
+    # Serialize the table to a Feather file format
+    feather.write_feather(table, './binary-output/{}_fet.feather'.format(file_name))
+
+    print ("Finished creating Apache Feather file")
+    toc = time.perf_counter()
+    geojson_feth_timing.append(toc - tic)
+
+    print(f"Timing Information: Total:\n\tSerialization Process \n\tTotal: {toc - tic:0.4f} seconds")
+    file_size = os.path.getsize('./binary-output/{}_fet.feather'.format(file_name))
+    print("File size is {} Kb".format(round(file_size/1024),2))
+    
+    ######################## Apache Feather ###########################
+    print ("========= Apache Feather ===========")
+    print ("Deserialize Apache Feather to GeoJSON")
+    tic = time.perf_counter()
+    # Reading data from serialized_file
+    df = feather.read_feather('./binary-output/experiment3_fet.feather')
+    df['geometry'] = df['geometry'].apply(wkt.loads)
+
+    # Create the GeoDataFrame
+    gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+    gdf.to_file('./geojson-output/{}-fet.geojson'.format(file_name), driver='GeoJSON')
+
+    toc = time.perf_counter()
+    feth_geojson_timing.append(toc - tic)
+
+    print(f"Timing Information: Total:\n\tDeserialization Process \n\tTotal: {toc - tic:0.4f} seconds")
+    file_size = os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))
+    print("File size is {} Kb".format(round(file_size/1024),2))
+
 
 
 print ("\n\n\n==== Statistical Report ====")
@@ -389,7 +487,11 @@ pbf_geojson_timing_np = np.array(pbf_geojson_timing)
 geojson_pbf_timing_np = np.array(geojson_pbf_timing)
 geojson_avro_timing_np = np.array(geojson_avro_timing)
 avro_geojson_timing_np = np.array(avro_geojson_timing)
-geopkg_geojson_timing_np  = np.array(geopkg_geojson_timing)
+geojson_parq_timing_np = np.array(geojson_parq_timing)
+parq_geojson_timing_np = np.array(parq_geojson_timing)
+geojson_feth_timing_np = np.array(geojson_feth_timing)
+feth_geojson_timing_np = np.array(feth_geojson_timing)
+geopkg_geojson_timing_np = np.array(geopkg_geojson_timing)
 load_geojson_timing_np  = np.array(load_geojson_timing)
 
 print ("=====File Sizes=====")
@@ -408,21 +510,84 @@ print("{}/binary-output/{}.pbf size is {} Kb".format(ROOT,file_name,round(file_s
 file_size = os.path.getsize('{}/binary-output/{}_fast.avro'.format(ROOT,file_name))
 print("{}/binary-output/{}_fast.avro size is {} Kb".format(ROOT,file_name,round(file_size/1024),2))
 
-
-
-
 file_size = os.path.getsize('{}/geojson-output/{}-avro_fast.geojson'.format(ROOT,file_name))
 print("{}/geojson-output/{}-avro_fast.geojson (Properties reduced) size is {} Kb".format(ROOT,file_name,round(file_size/1024),2))
 
 file_size = os.path.getsize('{}/geojson-output/{}-pbf.geojson'.format(ROOT,file_name))
 print("{}/geojson-output/{}-pbf.geojson (Properties reduced) size is {} Kb".format(ROOT,file_name,round(file_size/1024),2))
 
+file_size = os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name))
+print("./binary-output/{}_parq.parquet size is {} Kb".format(file_name,round(file_size/1024),2))
+
+file_size = os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name))
+print("./geojson-output/{}-parq.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
+
+file_size = os.path.getsize('./binary-output/{}_fet.feather'.format(file_name))
+print("./binary-output/{}_fet.feather size is {} Kb".format(file_name,round(file_size/1024),2))
+
+file_size = os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))
+print("./geojson-output/{}-fet.geojson size is {} Kb".format(file_name,round(file_size/1024),2))
+
 
 
 print ("=====Run Times=====")
 print("Load GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(load_geojson_timing_np, dtype=np.float64),np.std(load_geojson_timing_np, dtype=np.float64)))
 print("Convert GPKG -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geopkg_geojson_timing_np, dtype=np.float64),np.std(geopkg_geojson_timing_np, dtype=np.float64)))
-print("Convert GeoJSON (reduced) -> PBF mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_pbf_timing, dtype=np.float64),np.std(geojson_pbf_timing, dtype=np.float64)))
-print("Convert GeoJSON (reduced) -> AVRO mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_avro_timing, dtype=np.float64),np.std(geojson_avro_timing, dtype=np.float64)))
-print("Convert PBF -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(pbf_geojson_timing, dtype=np.float64),np.std(pbf_geojson_timing, dtype=np.float64)))
-print("Convert AVRO -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(avro_geojson_timing, dtype=np.float64),np.std(avro_geojson_timing, dtype=np.float64)))
+print("Serialize: GeoJSON (reduced) -> PBF mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_pbf_timing, dtype=np.float64),np.std(geojson_pbf_timing, dtype=np.float64)))
+print("Serialize: GeoJSON (reduced) -> AVRO mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_avro_timing, dtype=np.float64),np.std(geojson_avro_timing, dtype=np.float64)))
+print("Serialize: GeoJSON->Parq mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_parq_timing_np, dtype=np.float64),np.std(geojson_parq_timing_np, dtype=np.float64)))
+print("Serialize: GeoJSON->Feth mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(geojson_feth_timing_np, dtype=np.float64),np.std(geojson_feth_timing_np, dtype=np.float64)))
+print("Deserialize: PBF -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(pbf_geojson_timing, dtype=np.float64),np.std(pbf_geojson_timing, dtype=np.float64)))
+print("Deserialize: AVRO -> GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(avro_geojson_timing, dtype=np.float64),np.std(avro_geojson_timing, dtype=np.float64)))
+print("Deserialize: Parq->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(parq_geojson_timing_np,dtype=np.float64),np.std(parq_geojson_timing_np,dtype=np.float64)))
+print("Deserialize: feth->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(feth_geojson_timing_np,dtype=np.float64),np.std(feth_geojson_timing_np,dtype=np.float64)))
+
+
+data = pd.DataFrame({
+    'Type': ['Original File','Serialize: GeoJSON->Avro','Serialize: GeoJSON->PBF','Serialize: GeoJSON->Parq mean','Serialize: GeoJSON->Feth','Deserialize: Avro->GeoJSON','Deserialize: PBF->GeoJSON','Deserialize: Parq->GeoJSON','Deserialize: feth->GeoJSON'],
+    'fileSize':[os.path.getsize(INPUT_GPKG_FILE),os.path.getsize('./binary-output/{}_fast.avro'.format(file_name)),os.path.getsize('./binary-output/{}.pbf'.format(file_name)), os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name)),os.path.getsize('./binary-output/{}_fet.feather'.format(file_name)),os.path.getsize('./geojson-output/{}-avro_fast.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-pbf.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-parq.geojson'.format(file_name)),os.path.getsize('./geojson-output/{}-fet.geojson'.format(file_name))],
+    'meanTime':[0, np.mean(geojson_avro_timing_np),np.mean(geojson_pbf_timing_np),np.mean(geojson_parq_timing_np),np.mean(geojson_feth_timing_np),np.mean(avro_geojson_timing_np),np.mean(pbf_geojson_timing_np),np.mean(parq_geojson_timing_np),np.mean(feth_geojson_timing_np)],
+    'std-dev':[0, np.std(geojson_avro_timing_np),np.std(geojson_pbf_timing_np),np.std(geojson_parq_timing_np),np.std(geojson_feth_timing_np),np.std(avro_geojson_timing_np),np.std(pbf_geojson_timing_np),np.std(parq_geojson_timing_np),np.std(feth_geojson_timing_np)],
+})
+
+data['fileSize'] = data['fileSize'].apply(lambda x:  f"{round(x/1024, 2)} kb")
+data['meanTime'] = data['meanTime'].apply(lambda x:  f"{round(x, 2)} sec")
+data['std-dev'] = data['std-dev'].apply(lambda x:  f"{round(x, 2)} sec")
+# Create CSS styles for the table
+table_style = '''
+<style>
+    .decorative-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    .decorative-table th, .decorative-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .decorative-table th {
+        background-color: #f2f2f2;
+    }
+    
+    .decorative-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .decorative-table tr:hover {
+        background-color: #eaeaea;
+    }
+</style>
+'''
+
+# Convert DataFrame to HTML table
+html_table = data.to_html(classes='decorative-table', index=False)
+
+# Combine table style and HTML table
+decorative_table = table_style + html_table
+
+with open('results.html', 'w') as f:
+    f.write(decorative_table)
+
+webbrowser.open('results.html')
