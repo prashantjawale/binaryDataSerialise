@@ -465,10 +465,10 @@ json_fet_timing_np  = np.array(json_fet_timing)
 fet_geojson_timing_np  = np.array(fet_geojson_timing)
 
 print("JSON->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_geojson_timing_np, dtype=np.float64),np.std(json_geojson_timing_np, dtype=np.float64)))
-print("Serialize: JSON->Avro mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_avro_timing_np, dtype=np.float64),np.std(json_avro_timing_np, dtype=np.float64)))
-print("Serialize: JSON->PBF mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_pbf_timing_np, dtype=np.float64),np.std(json_pbf_timing_np, dtype=np.float64)))
-print("Serialize: JSON->Parq mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_parq_timing_np, dtype=np.float64),np.std(json_parq_timing_np, dtype=np.float64)))
-print("Serialize: JSON->Feth mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_fet_timing_np, dtype=np.float64),np.std(json_fet_timing_np, dtype=np.float64)))
+print("Serialize: GeoJSON->Avro mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_avro_timing_np, dtype=np.float64),np.std(json_avro_timing_np, dtype=np.float64)))
+print("Serialize: GeoJSON->PBF mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_pbf_timing_np, dtype=np.float64),np.std(json_pbf_timing_np, dtype=np.float64)))
+print("Serialize: GeoJSON->Parq mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_parq_timing_np, dtype=np.float64),np.std(json_parq_timing_np, dtype=np.float64)))
+print("Serialize: GeoJSON->Feth mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(json_fet_timing_np, dtype=np.float64),np.std(json_fet_timing_np, dtype=np.float64)))
 print("Deserialize: Avro->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(avro_geojson_timing_np, dtype=np.float64),np.std(avro_geojson_timing_np, dtype=np.float64)))
 print("Deserialize: PBF->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(pbf_geojson_timing_np,dtype=np.float64),np.std(pbf_geojson_timing_np,dtype=np.float64)))
 print("Deserialize: Parq->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mean(parq_geojson_timing_np,dtype=np.float64),np.std(parq_geojson_timing_np,dtype=np.float64)))
@@ -478,18 +478,16 @@ print("Deserialize: Feth->GeoJSON mean {:0.3f}s, std-dev {:0.4f}s".format(np.mea
 data = pd.DataFrame({
     'Type': [
         'Original File',
-        'JSON->GeoJSON',
-        'Serialize: JSON->Avro',
-        'Serialize: JSON->PBF',
-        'Serialize: JSON->Parq',
-        'Serialize: JSON->Feth',
+        'Serialize: GeoJSON->Avro',
+        'Serialize: GeoJSON->PBF',
+        'Serialize: GeoJSON->Parq',
+        'Serialize: GeoJSON->Feth',
         'Deserialize: Avro->GeoJSON',
         'Deserialize: PBF->GeoJSON',
         'Deserialize: Parq->GeoJSON',
         'Deserialize: feth->GeoJSON'],
     'fileSize':[
         os.path.getsize('./response-data/{}.json'.format(file_name)),
-        os.path.getsize('./geojson-output/{}.geojson'.format(file_name)),
         os.path.getsize('./binary-output/{}_fast.avro'.format(file_name)),
         os.path.getsize('./binary-output/{}.pbf'.format(file_name)),
         os.path.getsize('./binary-output/{}_parq.parquet'.format(file_name)),
@@ -501,7 +499,6 @@ data = pd.DataFrame({
         ],
     'meanTime':[
         0,
-        np.mean(json_geojson_timing_np),
         np.mean(json_avro_timing_np),
         np.mean(json_pbf_timing_np),
         np.mean(json_parq_timing_np),
@@ -512,7 +509,6 @@ data = pd.DataFrame({
         np.mean(fet_geojson_timing_np)],
     'std-dev':[
         0,
-        np.std(json_geojson_timing_np),
         np.std(json_avro_timing_np),
         np.std(json_pbf_timing_np),
         np.std(json_parq_timing_np),
